@@ -1,0 +1,47 @@
+Create Function MaxОбъем(@month int = 7,@year int = 2002,@Поствщик nvarchar(40) = 'Поставщик')
+RETURNS real
+RETURNS TABLE
+RETURN
+BEGIN
+	Declare @max real
+	Set @max = (
+	Select Max(Заказы.Цена * Заказы.Количество) as МаксОбъем,Поствщики.НаименованиеПоставщика
+	From Заказы
+	Inner Join Поставщики On Поставщики.КодПоставщика = Заказы.КодПоставщика
+	Where Заказы.Постащик = @Поставщик,DatePart(month,Заказы.Датаисполнения) = @mont And Year(Заказы.Датаисполнения) = year
+	)
+	Return @max
+End
+
+
+Select Поставщик,MaxОбъем(7,2002,Поставщик)
+From Заказы
+
+
+Create Function Max(@month int = 8,@year int = 2002)
+Returns real
+Begin
+	Declare @max real
+	Set @max = (
+		Select Max(MaxОбъем(@month,@year,Поставщик)) As Max
+		From Заказы
+		Inner Join Поставщики On Поставщики.КодПоставщика = Заказы.КодПоставщика
+		Where DatePart(month,Заказы.Датаисполнения) = @mont And Year(Заказы.Датаисполнения) = year
+		)
+	Return @max
+End
+
+Select Max(7,2002) As МаксОбъем
+
+
+Create Function Max(@month int = 7,@year int = 2002,@ТипСырья nvarchar(30) = 'Тип',@sum real = 2000 )
+RETURNS TABLE
+RETURN
+	Select Поставщики.КодПоставщика,Поставщики.НаименованиеПоставщика as Поставщик,Sum(Заказано.Цена * Заказыно.КОличесвтво) As Объем
+	From Заказы
+	Inner Join Поставщики On Поставщики.КОдПоставщика = Заказы.КОдПоставщика
+	Where DatePart(month,Заказы.Датаисполнения) = @mont And Year(Заказы.Датаисполнения) = year And Заказы.Тип = @ТипСырья 
+	And Заказано.Цена * Заказыно.КОличесвтво >= @sum
+	
+Select * From Max(default)
+Order by Поставщик

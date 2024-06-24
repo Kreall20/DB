@@ -1,0 +1,58 @@
+USE Lab4
+
+--1.2
+
+ALTER TABLE dbo.Ед_изм ADD PRIMARY KEY(КодЕдИзм);
+
+ALTER TABLE dbo.Покупатели ADD PRIMARY KEY(КодПокупателя);
+
+ALTER TABLE dbo.Поставщики ADD PRIMARY KEY(КодПокупателя);
+
+ALTER TABLE dbo.Поставщики ADD PRIMARY KEY(КодПоставщика);
+
+ALTER TABLE dbo.Склад ADD PRIMARY KEY(КодДвижения);
+
+ALTER TABLE dbo.Список_складов ADD PRIMARY KEY(КодСклада);
+
+ALTER TABLE dbo.Сырье ADD PRIMARY KEY(КодСырья);
+
+ALTER TABLE dbo.Типы_потребителей ADD PRIMARY KEY(КодТипаПотреб);
+
+ALTER TABLE dbo.Типы_Сырья ADD PRIMARY KEY(КодТипаСырья);
+
+--2.1
+
+SELECT TOP 10 НаимСырья Name,Price = ЦенаСырья
+	FROM [Сырье]
+		WHERE КодТипаСырья = 9
+			ORDER BY ЦенаСырья DESC;
+
+--2.2A
+
+SELECT НаимСырья,ЦенаСырья,КодЕдИзм
+	FROM [Сырье]
+		WHERE ЦенаСырья > ALL
+			(SELECT ЦенаСырья
+				FROM [Сырье]
+					WHERE КодЕдИзм = 3);
+
+--2.2B
+
+SELECT НаимСырья,ЦенаСырья,КодЕдИзм
+	FROM [Сырье]
+		WHERE ЦенаСырья > ANY
+			(SELECT ЦенаСырья
+				FROM [Сырье]
+					WHERE КодЕдИзм = 3);
+
+--2.3
+
+SELECT COUNT(НаимСырья) AS Количество_Напитков_бутылка
+	FROM [Сырье]
+		WHERE КодТипаСырья = 9 AND КодЕдИзм = 5;
+
+--2.4
+
+SELECT MAX(ЦенаСырья) AS Максимальная_цена_сырья, AVG(ЦенаСырья) AS Средняя_цена_сырья
+	FROM [Сырье]
+		WHERE КодЕдИзм = 1;
